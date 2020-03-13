@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -77,12 +77,12 @@
 			children = (
 				2ADEFFC22418A9D00061A5BE /* AppDelegate.swift */,
 				2ADEFFC42418A9D00061A5BE /* SceneDelegate.swift */,
+				2ADEFFE22418B20F0061A5BE /* TabBarController.swift */,
 				2ADEFFD62418AA530061A5BE /* LoginViewController.swift */,
 				2ADEFFD82418AB430061A5BE /* HomeViewController.swift */,
 				2ADEFFDA2418AB540061A5BE /* ImageSelectViewController.swift */,
 				2ADEFFDC2418AB630061A5BE /* PostViewController.swift */,
 				2ADEFFDE2418AB990061A5BE /* SettingViewController.swift */,
-				2ADEFFE22418B20F0061A5BE /* TabBarController.swift */,
 				2ADEFFC82418A9D00061A5BE /* Main.storyboard */,
 				2ADEFFCB2418A9D40061A5BE /* Assets.xcassets */,
 				2ADEFFCD2418A9D40061A5BE /* LaunchScreen.storyboard */,
@@ -106,7 +106,6 @@
 				B19370CB0A0F2EFC4C7805A1 /* Pods-Instagram.debug.xcconfig */,
 				4ADA2D75F253F743F3CDEA73 /* Pods-Instagram.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
