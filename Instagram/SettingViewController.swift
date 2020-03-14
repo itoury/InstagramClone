@@ -32,8 +32,6 @@ class SettingViewController: UIViewController {
                         return
                     }
                     print("DEBUG_PRINT: [displayName = \(user.displayName!)]の設定に成功しました。")
-
-    
                     SVProgressHUD.showSuccess(withStatus: "表示名を変更しました")
                 }
             }
