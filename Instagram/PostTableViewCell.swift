@@ -8,24 +8,28 @@
 
 import UIKit
 import FirebaseUI
+import Firebase
 
-class PostTableViewCell: UITableViewCell {
+class PostTableViewCell: UITableViewCell, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var postImageView: UIImageView!
     @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var commentButton: UIButton!
     @IBOutlet weak var likeLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var captionLabel: UILabel!
+    @IBOutlet weak var commentTableView: UITableView!
     
+    var commentArray: [CommentData] = []
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        let nib = UINib(nibName: "CommentTableViewCell", bundle: nil)
+        commentTableView.register(nib, forCellReuseIdentifier: "CommentCell")
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
     }
     
     func setPostData(_ postData: PostData) {
@@ -54,4 +58,16 @@ class PostTableViewCell: UITableViewCell {
         }
     }
     
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = commentTableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as! CommentTableViewCell
+        cell.setCommentData(postArray[indexPath.row], indexPath)
+        
+        return cell
+    }
+    
 }
+

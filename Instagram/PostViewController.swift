@@ -40,10 +40,10 @@ class PostViewController: UIViewController {
             SVProgressHUD.showSuccess(withStatus: "投稿しました")
             UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
         }
- 
     }
     
     @IBAction func handleCancelButton(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
