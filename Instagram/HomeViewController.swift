@@ -14,7 +14,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var tableView: UITableView!
     
     var postArray: [PostData] = []
-    var commentArray: [CommentData] = []
     
     var listener: ListenerRegistration!
 
@@ -48,7 +47,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     self.tableView.reloadData()
                 }
                 
-                let commentsRef = Firestore.firestore().collection(Const.CommentPath).order(by: "date", descending: true)
             }
             
         } else {
@@ -104,54 +102,36 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let indexPath = tableView.indexPathForRow(at: point)
         let postData = postArray[indexPath!.row]
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell")
-        /*
-        let commentViewController = self.storyboard?.instantiateViewController(withIdentifier: "Comment") as! CommentViewController
-        commentViewController.contributorName = postData.name
-        commentViewController.postId = postData.id
-        self.present(commentViewController, animated: true, completion: nil)
- */
+        let postTableViewCell = tableView.dequeueReusableCell(withIdentifier: "PostCell") as! PostTableViewCell
+        let CommentCell = postTableViewCell.commentTableView.dequeueReusableCell(withIdentifier: "CommentCell") as! CommentTableViewCell
+        
         var alertTextField: UITextField?
 
-            let alert = UIAlertController(
-                title: "\(postData.name)さんにコメント",
-                message: "コメント内容を入力",
-                preferredStyle: UIAlertController.Style.alert)
-            alert.addTextField(
-                configurationHandler: {(textField: UITextField!) in
-                    alertTextField = textField
-                    textField.text = self.label1.text
-            })
-            alert.addAction(
-                UIAlertAction(
-                    title: "キャンセル",
-                    style: UIAlertAction.Style.cancel,
-                    handler: nil))
-            alert.addAction(
-                UIAlertAction(
-                    title: "コメントする",
-                    style: UIAlertAction.Style.default) { _ in
-                    if let text = alertTextField?.text {
-                        self.label1.text = text
-                        let commentRef = Firestore.firestore().collection(Const.CommentPath).document()
-                        SVProgressHUD.show()
-                        let name = Auth.auth().currentUser?.displayName
-                        let commentDic = [
-                            "postId" : postData.id,
-                            "name" : name!,
-                            "comment" : text,
-                            "date" : FieldValue.serverTimestamp(),
-                            ] as [String : Any]
-                        commentRef.setData(commentDic)
-                        SVProgressHUD.showSuccess(withStatus: "コメントしました")
-                        UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
-                    }
+        let alert = UIAlertController(
+            title: "\(postData.name!)さんへのコメント",
+            message: "コメント内容を入力",
+            preferredStyle: UIAlertController.Style.alert)
+        alert.addTextField(
+            configurationHandler: {(textField: UITextField!) in
+                alertTextField = textField
+        })
+        alert.addAction(
+            UIAlertAction(
+                title: "キャンセル",
+                style: UIAlertAction.Style.cancel,
+                handler: nil))
+        alert.addAction(
+            UIAlertAction(
+                title: "コメントする",
+                style: UIAlertAction.Style.default) { _ in
+                if let text = alertTextField?.text {
+                    SVProgressHUD.show()
+                    CommentCell.setCommentData(postData, text)
+                    SVProgressHUD.showSuccess(withStatus: "コメントしました")
                 }
-            )
+            }
+        )
 
-            self.present(alert, animated: true, completion: nil)
-        }
+        self.present(alert, animated: true, completion: nil)
     }
-    
-    
 }

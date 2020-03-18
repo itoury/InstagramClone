@@ -21,6 +21,8 @@ class PostTableViewCell: UITableViewCell, UITableViewDataSource, UITableViewDele
     @IBOutlet weak var commentTableView: UITableView!
     
     var commentArray: [CommentData] = []
+    var postData: PostData!
+    var listener: ListenerRegistration!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -33,6 +35,8 @@ class PostTableViewCell: UITableViewCell, UITableViewDataSource, UITableViewDele
     }
     
     func setPostData(_ postData: PostData) {
+        self.postData = postData
+        
         postImageView.sd_imageIndicator = SDWebImageActivityIndicator.gray
         let imageRef = Storage.storage().reference().child(Const.ImagePath).child(postData.id + ".jpg")
         postImageView.sd_setImage(with: imageRef)
@@ -59,14 +63,31 @@ class PostTableViewCell: UITableViewCell, UITableViewDataSource, UITableViewDele
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return
+        return self.commentArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = commentTableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as! CommentTableViewCell
-        cell.setCommentData(postArray[indexPath.row], indexPath)
+        cell.setCommentData(postData, commentArray[indexPath.raw], )
         
         return cell
+    }
+    
+    func commentListener() {
+        let commentsRef = Firestore.firestore().collection(Const.CommentPath).whereField("postId", isEqualTo: postData.id).order(by: "date", descending: true)
+        listener = commentsRef.addSnapshotListener() { (querySnapshot, error) in
+            if let error = error {
+                print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+                return
+            }
+            self.commentArray = querySnapshot!.documents.map { document in
+                print("DEBUG_PRINT: document取得 \(document.documentID)")
+                let commentData = CommentData(document: document)
+                return commentData
+            }
+            
+            self.commentTableView.reloadData()
+        }
     }
     
 }
