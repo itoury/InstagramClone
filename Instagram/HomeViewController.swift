@@ -71,6 +71,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         cell.commentButton.addTarget(self, action:#selector(handleCommentButton(_:forEvent:)), for: .touchUpInside)
         
+        cell.commentListButton.addTarget(self, action:#selector(handleCommentListButton(_:forEvent:)), for: .touchUpInside)
+        
         return cell
     }
     
@@ -102,9 +104,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let indexPath = tableView.indexPathForRow(at: point)
         let postData = postArray[indexPath!.row]
         
-        let postTableViewCell = tableView.dequeueReusableCell(withIdentifier: "PostCell") as! PostTableViewCell
-        let CommentCell = postTableViewCell.commentTableView.dequeueReusableCell(withIdentifier: "CommentCell") as! CommentTableViewCell
-        
         var alertTextField: UITextField?
 
         let alert = UIAlertController(
@@ -126,12 +125,37 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 style: UIAlertAction.Style.default) { _ in
                 if let text = alertTextField?.text {
                     SVProgressHUD.show()
-                    CommentCell.setCommentData(postData, text)
+                    let commentRef = Firestore.firestore().collection(Const.PostPath).document(postData.id).collection(Const.CommentPath).document()
+                    
+                    let name = Auth.auth().currentUser?.displayName
+                    
+                    
+                    let commentDic = [
+                        "postId" : postData.id,
+                        "name" : name!,
+                        "comment" : text,
+                        "date" : FieldValue.serverTimestamp(),
+                        ] as [String : Any]
+                    commentRef.setData(commentDic)
+                    UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
                     SVProgressHUD.showSuccess(withStatus: "コメントしました")
                 }
             }
         )
 
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc func handleCommentListButton(_ sender: UIButton, forEvent event: UIEvent) {
+        print("DEBUG_PRINT: comment listボタンがタップされました。")
+
+        let touch = event.allTouches?.first
+        let point = touch!.location(in: self.tableView)
+        let indexPath = tableView.indexPathForRow(at: point)
+        let postData = postArray[indexPath!.row]
+        
+        let commentListViewController = self.storyboard?.instantiateViewController(withIdentifier: "CommentList") as! CommentListViewController
+        commentListViewController.postData = postData
+        self.present(commentListViewController, animated: true, completion: nil)
     }
 }
