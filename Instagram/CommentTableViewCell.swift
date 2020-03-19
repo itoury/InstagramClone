@@ -7,11 +7,9 @@
 //
 
 import UIKit
-import Firebase
 
 class CommentTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var commenterNameLabel: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
     
     override func awakeFromNib() {
@@ -23,7 +21,6 @@ class CommentTableViewCell: UITableViewCell {
     }
     
     func setCommentData(_ commentData: CommentData) {
-        self.commenterNameLabel.text = commentData.name!
-        self.commentLabel.text = commentData.comment!
+        self.commentLabel.text = "\(commentData.name!) : \(commentData.comment!)"
     }
 }

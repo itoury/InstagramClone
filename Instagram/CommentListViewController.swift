@@ -25,6 +25,9 @@ class CommentListViewController: UIViewController, UITableViewDataSource, UITabl
         tableView.register(postNib, forCellReuseIdentifier: "PostCell")
         let commentNib = UINib(nibName: "CommentTableViewCell", bundle: nil)
         tableView.register(commentNib, forCellReuseIdentifier: "CommentCell")
+        tableView.estimatedRowHeight = 60
+        tableView.rowHeight = UITableView.automaticDimension
+    
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -73,5 +76,18 @@ class CommentListViewController: UIViewController, UITableViewDataSource, UITabl
             cell.setCommentData(commentsArray[indexPath.row - 1])
             return cell
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 0 {
+            tableView.estimatedRowHeight = 40
+            tableView.rowHeight = UITableView.automaticDimension
+            return tableView.rowHeight
+        } else {
+            tableView.estimatedRowHeight = 60
+            tableView.rowHeight = UITableView.automaticDimension
+            return tableView.rowHeight
+        }
+        
     }
 }
